@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matching Game Use Vue Js</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vuetify@3.4.10/dist/vuetify.min.css">
+</head>
+
+<body>
+    <div id="app">
+        {{ message }}
+    </div>
+
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@3.4.10/dist/vuetify.min.js"></script>
+
+    <script>
+        const vuetify = Vietify.createVuetify();
+        const app = Vue.createApp({
+            data() {
+                return {
+                    title : "Work 3 : Image matching game using Vue JS",
+                    footer : "chakit pragod 643021316-6 Com-sci"
+                }
+            }
+        })
+
+        app.use(vuetify).mount('#app')
+
+    </script>
+</body>
+
+</html>
