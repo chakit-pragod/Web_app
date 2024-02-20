@@ -1,43 +1,78 @@
 const RB = ReactBootstrap;
+const { Alert, Card, Button, table } = ReactBootstrap
+
+// import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+// import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
+
+function EditButton({ std, app }) {
+    return <button onClick={() => app.edit(std)}>แก้ไข</button>
+}
 
 
-// function EditButton({ std, app }) {
-//     return <button onClick={() => app.edit(std)}>แก้ไข</button>
+function DeleteButton({ std, app }) {
+    return <button onClick={() => app.delete(std)}>ลบ</button>
+}
+
+
+//Use for loop
+// function StudentTable({ data, app }) {
+//     var rows = [];
+//     for (var s of data) {
+//         rows.push(<tr>
+//             <td>{s.id}</td>
+//             <td>{s.title}</td>
+//             <td>{s.fname}</td>
+//             <td>{s.lname}</td>
+//             <td>{s.email}</td>
+//         </tr>);
+//     }
+//     return <table className='table'>
+//         <tr>
+//             <td>รหัส</td>
+//             <td>คำนำหน้า</td>
+//             <td>ชื่อ</td>
+//             <td>สกุล</td>
+//             <td>email</td>
+//         </tr>
+//         {rows}
+//     </table>
 // }
 
-// function DeleteButton({ std, app }) {
-//     return <button onClick={() => app.delete(std)}>ลบ</button>
-// }
 
+// use Array.map
 function StudentTable({ data, app }) {
-    var rows = [];
-    for (var s of data) {
-        rows.push(<tr>
-            <td>{s.id}</td>
-            <td>{s.title}</td>
-            <td>{s.fname}</td>
-            <td>{s.lname}</td>
-            <td>{s.email}</td>
-            {/* <td>EditButton std={s} app={app}</td>
-            <td>DeleteButton std={s} app={app}</td> */}
-        </tr>);
-    }
-    return <table className='table'>
-        <tr>
-            <td>รหัส</td>
-            <td>คำนำหน้า</td>
-            <td>ชื่อ</td>
-            <td>สกุล</td>
-            <td>email</td>
-        </tr>
-        {rows}
+    return <table className='table mt-5'>
+        <thead>
+            <tr>
+                <th>รหัส</th>
+                <th>คำนำหน้า</th>
+                <th>ชื่อ</th>
+                <th>สกุล</th>
+                <th>email</th>
+            </tr>
+        </thead>
+        <tbody>
+            {
+                data.map((s) => <tr className="table-info">
+                    <td>{s.id}</td>
+                    <td>{s.title}</td>
+                    <td>{s.fname}</td>
+                    <td>{s.lname}</td>
+                    <td>{s.email}</td>
+                    <td><EditButton std={s} app={app} /></td>
+                    <td><DeleteButton std={s} app={app} /></td>
+                </tr>)
+            }
+        </tbody>
     </table>
 }
 
-function TextInput({ label, app, value }) {
+
+// TextInput
+function TextInput({ label, app, value, style }) {
     return <label className="form-label">
         {label}:
-        <input className="form-control"
+        <input className="form-control" style={style}
             value={app.state[value]} onChange={(ev) => {
                 var s = {};
                 s[value] = ev.target.value;
@@ -46,24 +81,6 @@ function TextInput({ label, app, value }) {
             }></input>
     </label>;
 }
-
-const firebaseConfig = {
-    apiKey: "AIzaSyDNMliUdJxEZSjIVqbLB0vF6hvFkU2JSKs",
-    authDomain: "web2566-55649.firebaseapp.com",
-    projectId: "web2566-55649",
-    storageBucket: "web2566-55649.appspot.com",
-    messagingSenderId: "500471255191",
-    appId: "1:500471255191:web:54c6c60a88b38fea9559d2",
-    measurementId: "G-53EKEQV41E"
-};
-
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-db.collection("students").get().then((querySnapshot) => {
-    querySnapshot.forEach((doc) => {
-        console.log(`${doc.id} =>`, doc.data());
-    });
-});
 
 
 class App extends React.Component {
@@ -95,6 +112,7 @@ class App extends React.Component {
         });
     }
 
+
     autoRead() {
         db.collection("students").onSnapshot((querySnapshot) => {
             var stdlist = [];
@@ -105,15 +123,18 @@ class App extends React.Component {
         });
     }
 
+
     state = {
         scene: 0,
         students: [],
         stdid: "",
+        stdtitle: "",
         stdfname: "",
         stdlname: "",
         stdemail: "",
         stdphone: "",
     }
+
 
     insertData() {
         db.collection("students").doc(this.state.stdid).set({
@@ -124,6 +145,7 @@ class App extends React.Component {
             email: this.state.stdemail,
         });
     }
+
 
     edit(std) {
         this.setState({
@@ -136,6 +158,7 @@ class App extends React.Component {
         })
     }
 
+
     delete(std) {
         if (confirm("ต้องการลบข้อมูล")) {
             db.collection("students").doc(std.id).delete();
@@ -143,33 +166,50 @@ class App extends React.Component {
     }
 
     render() {
-        var stext = JSON.stringify(this.state.students);
+        // var stext = JSON.stringify(this.state.students);  
         return (
-            <RB.Card>
-                <RB.Card.Header>{this.title}</RB.Card.Header>
-                <RB.Card.Body>
-                    <RB.Button onClick={() => this.autoRead()}>Auto Read</RB.Button>
-                    <RB.Button onClick={() => this.readData()}>Read Data</RB.Button>
-                    <div>
-                        {stext}
+            <Card>
+                <Card.Header>{this.title}</Card.Header>
+                <Card.Body className="content">
+                    <Button onClick={() => this.readData()} style={{marginRight : 10}}>Read Data</Button>
+                    <Button onClick={() => this.autoRead()}>Auto Read</Button>
+                    <div className="table">
+                        <StudentTable data={this.state.students} app={this} />
                     </div>
-                </RB.Card.Body>
-                <RB.Card.Footer>
-                    <b>เพิ่มนักศึกษา :</b><br />
-                    <TextInput label="ID" app={this} value="stdid" />
-                    <TextInput label="ชื่อ" app={this} value="stdfname" />
-                    <TextInput label="สกุล" app={this} value="stdlname" />
-                    <TextInput label="Email" app={this} value="stdemail" />
-                    <TextInput label="Phone" app={this} value="stdphone" />
-                    <RB.Button onClick={() => this.insertData()}>เพิ่มข้อมูล</RB.Button>
-                    {this.footer}
-                </RB.Card.Footer>
-            </RB.Card>
+                </Card.Body>
+                <Card.Footer>
+                    <b>เพิ่ม/แก้ไขข้อมูล นักศึกษา :</b><br />
+                    <TextInput label="ID" app={this} value="stdid" style={{ width: 120 }} />
+                    <TextInput label="คำนำหน้า" app={this} value="stdtitle" style={{ width: 100, marginLeft: 10 }} />
+                    <TextInput label="ชื่อ" app={this} value="stdfname" style={{ width: 120, marginLeft: 10 }} />
+                    <TextInput label="สกุล" app={this} value="stdlname" style={{ width: 120, marginLeft: 10 }} />
+                    <TextInput label="Email" app={this} value="stdemail" style={{ width: 150, marginLeft: 10 }} />
+                    <TextInput label="Phone" app={this} value="stdphone" style={{ width: 120, marginLeft: 10 }} />
+                    <Button onClick={() => this.insertData()} style={{ marginLeft: 10 }}>Save</Button>
+                </Card.Footer>
+                <Card.Footer>{this.footer}</Card.Footer>
+            </Card>
         );
     }
 }
 
+const firebaseConfig = {
+    apiKey: "AIzaSyDNMliUdJxEZSjIVqbLB0vF6hvFkU2JSKs",
+    authDomain: "web2566-55649.firebaseapp.com",
+    projectId: "web2566-55649",
+    storageBucket: "web2566-55649.appspot.com",
+    messagingSenderId: "500471255191",
+    appId: "1:500471255191:web:54c6c60a88b38fea9559d2",
+    measurementId: "G-53EKEQV41E"
+};
 
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+// db.collection("students").get().then((querySnapshot) => {
+//     querySnapshot.forEach((doc) => {
+//         console.log(`${doc.id} =>`, doc.data());
+//     });
+// });
 
 
 
