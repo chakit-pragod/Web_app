@@ -49,6 +49,7 @@ function StudentTable({ data, app }) {
                 <th>ชื่อ</th>
                 <th>สกุล</th>
                 <th>email</th>
+                <th>Phone</th>
             </tr>
         </thead>
         <tbody>
@@ -59,6 +60,7 @@ function StudentTable({ data, app }) {
                     <td>{s.fname}</td>
                     <td>{s.lname}</td>
                     <td>{s.email}</td>
+                    <td>{s.phone}</td>
                     <td><EditButton std={s} app={app} /></td>
                     <td><DeleteButton std={s} app={app} /></td>
                 </tr>)
@@ -179,7 +181,7 @@ class App extends React.Component {
                 </Card.Body>
                 <Card.Footer>
                     <b>เพิ่ม/แก้ไขข้อมูล นักศึกษา :</b><br />
-                    <TextInput label="ID" app={this} value="stdid" style={{ width: 120 }} />
+                    <TextInput placeholder="Hello" label="ID" app={this} value="stdid" style={{ width: 120 }} />
                     <TextInput label="คำนำหน้า" app={this} value="stdtitle" style={{ width: 100, marginLeft: 10 }} />
                     <TextInput label="ชื่อ" app={this} value="stdfname" style={{ width: 120, marginLeft: 10 }} />
                     <TextInput label="สกุล" app={this} value="stdlname" style={{ width: 120, marginLeft: 10 }} />
